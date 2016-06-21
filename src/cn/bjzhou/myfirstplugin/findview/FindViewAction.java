@@ -1,4 +1,4 @@
-package cn.bjzhou.myfirstplugin;
+package cn.bjzhou.myfirstplugin.findview;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -8,6 +8,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogBuilder;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.impl.source.PsiFieldImpl;
+import com.intellij.psi.search.PsiShortNamesCache;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.panels.HorizontalLayout;
@@ -37,25 +41,38 @@ public class FindViewAction extends AnAction {
     public void actionPerformed(AnActionEvent anActionEvent) {
         Project project = getEventProject(anActionEvent);
         VirtualFile selectedFile = anActionEvent.getData(PlatformDataKeys.VIRTUAL_FILE);
+        PsiElement psiElement = anActionEvent.getData(PlatformDataKeys.PSI_ELEMENT);
 
+        if (selectedFile == null) return;
         try {
-            showDialog(project, selectedFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (XPathExpressionException e) {
-            e.printStackTrace();
+            if (selectedFile.getFileType().getName().equals("JAVA")) {
+                if (psiElement instanceof PsiFieldImpl) {
+                    PsiFieldImpl field = (PsiFieldImpl) psiElement;
+                    PsiFile[] files = PsiShortNamesCache.getInstance(project).getFilesByName(field.getName() + ".xml");
+
+                    if (files.length > 0) {
+                        showDialog(project, field.getName() + ".xml", files[0].getVirtualFile().contentsToByteArray());
+                    }
+                }
+            } else if (selectedFile.getFileType().getName().equals("XML")) {
+                showDialog(project, selectedFile.getName(), selectedFile.contentsToByteArray());
+            }
         } catch (SAXException e) {
             e.printStackTrace();
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
+        } catch (XPathExpressionException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    private void showDialog(Project project, VirtualFile file) throws SAXException, ParserConfigurationException, XPathExpressionException, IOException {
+    private void showDialog(Project project, String title, byte[] content) throws SAXException, ParserConfigurationException, XPathExpressionException, IOException {
         DialogBuilder builder = new DialogBuilder(project);
-        builder.setTitle(file.getName());
+        builder.setTitle(title);
         JPanel jPanel = new JPanel(new BorderLayout());
-        JTextArea textArea = new JTextArea(produceCode(file));
+        JTextArea textArea = new JTextArea(produceCode(content));
         textArea.setBorder(new LineBorder(JBColor.gray));
         JBScrollPane scrollPane = new JBScrollPane(textArea);
         JPanel jCheckBoxPanel = new JPanel(new HorizontalLayout(10));
@@ -79,7 +96,7 @@ public class FindViewAction extends AnAction {
             }
             if (e.getStateChange() == ItemEvent.SELECTED || e.getStateChange() == ItemEvent.DESELECTED) {
                 try {
-                    textArea.setText(produceCode(file));
+                    textArea.setText(produceCode(content));
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 } catch (XPathExpressionException e1) {
@@ -108,9 +125,9 @@ public class FindViewAction extends AnAction {
         builder.show();
     }
 
-    private String produceCode(VirtualFile virtualFile) throws IOException, XPathExpressionException, SAXException, ParserConfigurationException {
+    private String produceCode(byte[] content) throws IOException, XPathExpressionException, SAXException, ParserConfigurationException {
         XMLResourceExtractor resourceExtractor = XMLResourceExtractor.createResourceExtractor();
-        InputStream inputStream = new ByteArrayInputStream(virtualFile.contentsToByteArray());
+        InputStream inputStream = new ByteArrayInputStream(content);
         List<Resource> resourceList = resourceExtractor.extractResourceObjectsFromStream(inputStream);
         StringBuilder builder = new StringBuilder();
         if (mUseField) {
@@ -130,10 +147,11 @@ public class FindViewAction extends AnAction {
             String id = generateId(resource.getResourceId());
             String type = resource.getResourceType();
             String findStr = mHasParent ? "parent.findViewById" : "findViewById";
+            String prefixStr = resource.isAndroidId() ? "android.R.id." : "R.id.";
             if (mUseField) {
-                builder.append(String.format("    %s = (%s) %s(R.id.%s)", id, type, findStr, resource.getResourceId())).append("\n");
+                builder.append(String.format("    %s = (%s) %s(%s%s);", id, type, findStr, prefixStr, resource.getResourceId())).append("\n");
             } else {
-                builder.append(String.format("    %s %s = (%s) %s(R.id.%s)", type, id, type, findStr, resource.getResourceId())).append("\n");
+                builder.append(String.format("    %s %s = (%s) %s(%s%s);", type, id, type, findStr, prefixStr, resource.getResourceId())).append("\n");
             }
         }
         builder.append("}").append("\n");

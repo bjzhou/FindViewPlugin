@@ -1,4 +1,4 @@
-package cn.bjzhou.myfirstplugin;
+package cn.bjzhou.myfirstplugin.findview;
 
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 

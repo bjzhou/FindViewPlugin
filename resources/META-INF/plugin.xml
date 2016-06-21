@@ -29,9 +29,12 @@
   <actions>
     <group>
       <separator/>
-      <action class="cn.bjzhou.myfirstplugin.FindViewAction"
+      <action class="cn.bjzhou.myfirstplugin.findview.FindViewAction"
               id="MyFirstPlugin.FindViewAction"
               text="Generate FindViewByIds Code" />
+      <action class="cn.bjzhou.myfirstplugin.mock.MockAction"
+              id="MyFirstPlugin.MockAction"
+              text="Mock for plugin" />
       <separator/>
       <add-to-group group-id="ProjectViewPopupMenu" anchor="after"
                     relative-to-action="XmlGenerateToolsGroup"/>

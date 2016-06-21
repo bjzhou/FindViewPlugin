@@ -1,8 +1,17 @@
-package cn.bjzhou.myfirstplugin;
+package cn.bjzhou.myfirstplugin.findview;
 
 public class Resource {
     private String resourceId;
     private String resourceType;
+    private boolean isAndroidId = false;
+
+    public boolean isAndroidId() {
+        return isAndroidId;
+    }
+
+    public void setAndroidId(boolean androidId) {
+        isAndroidId = androidId;
+    }
 
     public Resource(String resourceId, String resourceType) {
         this.resourceId = resourceId;

@@ -1,4 +1,4 @@
-package cn.bjzhou.myfirstplugin;
+package cn.bjzhou.myfirstplugin.findview;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -35,11 +35,15 @@ public class XMLResourceExtractor {
     }
 
     private Resource getResourceObject(Node node) {
-        String[] split = getIdAttributeValue(node).split("\\/");
+        String[] split = getIdAttributeValue(node).split("/");
         String resourceId = split[1];
         int lastDot = node.getNodeName().lastIndexOf(".");
         String resourceType = lastDot == -1 ? node.getNodeName() : node.getNodeName().substring(lastDot + 1);
-        return new Resource(resourceId, resourceType);
+        Resource resource = new Resource(resourceId, resourceType);
+        if (split[0].equals("@android:id")) {
+            resource.setAndroidId(true);
+        }
+        return resource;
     }
 
     private String getIdAttributeValue(Node node) {
