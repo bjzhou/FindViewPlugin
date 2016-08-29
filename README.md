@@ -11,6 +11,10 @@ Android Studio/IntelliJ IDEA Plugin for generate code `findViewById`.
 * change '_' in xml id to CamelCase field.
 * support incremental update.
 
+## Download & Installation
+All available versions of plugin are in releases You can download zip file from latest release and install it manually in:
+Preferences/Settings->Plugins->Install plugin from disk.
+
 ## Thanks
 * [android-codegenerator-plugin-intellij](https://github.com/tmorcinek/android-codegenerator-plugin-intellij)
 
