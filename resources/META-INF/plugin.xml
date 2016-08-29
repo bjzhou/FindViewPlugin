@@ -1,11 +1,11 @@
 <idea-plugin version="2">
-  <id>cn.bjzhou.myfirstplugin</id>
-  <name>My First Plugin</name>
+  <id>cn.bjzhou.findviewplugin</id>
+  <name>FindViewPlugin</name>
   <version>1.0</version>
   <vendor email="bjzhou1990@gmail.com" url="http://bjzhou.cn">Robin Chou</vendor>
 
   <description><![CDATA[
-      This is my first plugin.
+      A Plugin for Android findViewByIds.
     ]]></description>
 
   <change-notes><![CDATA[
@@ -32,9 +32,9 @@
       <action class="cn.bjzhou.myfirstplugin.findview.FindViewAction"
               id="MyFirstPlugin.FindViewAction"
               text="Generate FindViewByIds Code" />
-      <action class="cn.bjzhou.myfirstplugin.mock.MockAction"
-              id="MyFirstPlugin.MockAction"
-              text="Mock for plugin" />
+      <!--<action class="cn.bjzhou.myfirstplugin.mock.MockAction"-->
+              <!--id="MyFirstPlugin.MockAction"-->
+              <!--text="Mock for plugin" />-->
       <separator/>
       <add-to-group group-id="ProjectViewPopupMenu" anchor="after"
                     relative-to-action="XmlGenerateToolsGroup"/>

@@ -147,11 +147,35 @@ public class FindViewAction extends AnAction {
                         if (mUseField) {
                             for (String fieldStr : mFieldsStr.split("\n")) {
                                 PsiField field = PsiElementFactory.SERVICE.getInstance(mProject).createFieldFromText(fieldStr, mPsiFile);
-                                method.getContainingClass().addBefore(field, method.getContainingClass().getMethods()[0]);
+                                boolean alreadyHave = false;
+                                PsiField[] fields = method.getContainingClass().getFields();
+                                for (PsiField f : fields) {
+                                    if (f.getName().equals(field.getName())) {
+                                        alreadyHave = true;
+                                        break;
+                                    }
+                                }
+                                if (!alreadyHave) {
+                                    method.getContainingClass().addBefore(field, method.getContainingClass().getMethods()[0]);
+                                }
                             }
                         }
+
+                        PsiElement newEle = null;
+                        PsiMethod[] methods = method.getContainingClass().getMethods();
+                        for (PsiMethod m : methods) {
+                            if (m.getName().equals("findViews")) {
+                                newEle = m;
+                                break;
+                            }
+                        }
+
                         PsiMethod element = PsiElementFactory.SERVICE.getInstance(mProject).createMethodFromText(mMethodStr, mPsiFile);
-                        PsiElement newEle = method.getContainingClass().addAfter(element, method);
+                        if (newEle == null) {
+                            newEle = method.getContainingClass().addAfter(element, method);
+                        } else {
+                            newEle = newEle.replace(element);
+                        }
                         mEditor.getCaretModel().moveToOffset(PsiUtils.getStartOffset(newEle.getNextSibling()));
                         mEditor.getScrollingModel().scrollToCaret(ScrollType.MAKE_VISIBLE);
                     }
