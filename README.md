@@ -2,23 +2,19 @@
 Android Studio/IntelliJ IDEA Plugin for generate code `findViewById`.
 
 ## OverView
----
 ![a](https://github.com/bjzhou/FindViewPlugin/blob/master/screenshots/a.png?raw=true)
 ![b](https://github.com/bjzhou/FindViewPlugin/blob/master/screenshots/b.png?raw=true)
 
 ## Features
----
 * generate find view codes auto.
 * add prefix 'm' for Android code style.
 * change '_' in xml id to CamelCase field.
 * support incremental update.
 
 ## Thanks
----
 * [android-codegenerator-plugin-intellij](https://github.com/tmorcinek/android-codegenerator-plugin-intellij)
 
 ## License
----
 ```
 Copyright 2016 bjzhou
 
