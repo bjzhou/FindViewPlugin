@@ -2,7 +2,7 @@
   <id>cn.bjzhou.findviewplugin</id>
   <name>FindViewPlugin</name>
   <version>1.0</version>
-  <vendor email="bjzhou1990@gmail.com" url="http://bjzhou.cn">Robin Chou</vendor>
+  <vendor email="bjzhou1990@gmail.com" url="http://bjzhou.cn">Robin Zhou</vendor>
 
   <description><![CDATA[
       A Plugin for Android findViewByIds.
